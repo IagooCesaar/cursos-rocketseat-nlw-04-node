@@ -1,11 +1,17 @@
 import {Request, Response} from 'express'
+import { getRepository } from 'typeorm';
+import { User } from '../models/User';
 
 class UserController {
   async create(request: Request, response: Response) {
-    const body = request.body;
-    console.log(body)
+    const {name, email} = request.body;
 
-    return response.status(201).send({message: 'ok'})
+    const userRepository = getRepository(User);
+    const user = userRepository.create({name, email})
+
+    await userRepository.save(user)    
+
+    return response.status(201).send(user)
   }
 
   async index(request: Request, response: Response) {
