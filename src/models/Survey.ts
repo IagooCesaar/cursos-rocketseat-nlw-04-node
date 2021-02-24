@@ -22,3 +22,5 @@ class Survey {
     }
   }
 }
+
+export { Survey }
