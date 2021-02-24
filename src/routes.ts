@@ -9,6 +9,6 @@ router.post('/users', userController.create)
 import { SurveyController } from './controllers/SurveyController'
 const surveyController = new SurveyController();
 
-router.post('/survey', surveyController.create)
+router.post('/surveys', surveyController.create)
 
 export { router }
