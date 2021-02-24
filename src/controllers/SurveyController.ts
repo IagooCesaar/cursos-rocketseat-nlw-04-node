@@ -16,6 +16,14 @@ class SurveyController {
     return res.status(201).send(survey)
   }
 
+  async show(req: Request, res: Response) {
+    const surveyRespository = getCustomRepository(SurveysRepository)  
+
+    const all = await surveyRespository.find();
+
+    return res.status(200).send(all)
+  }
+
 }
 
 export { SurveyController }
