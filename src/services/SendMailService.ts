@@ -6,8 +6,8 @@ import handlebars from 'handlebars'
 interface MailToSend {
   to: string;
   subject: string;
+  
   variables: object;
-
   templatePath: string;
 }
 
