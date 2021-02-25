@@ -39,7 +39,8 @@ class SendMailController {
       where: [
         {user_id: user.id},
         {survey_id: survey.id}
-      ]
+      ],
+      // relations: ['Users']
     })
 
     if (surveyUserAlreadyExist) {
