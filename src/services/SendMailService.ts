@@ -6,7 +6,9 @@ import handlebars from 'handlebars'
 interface MailToSend {
   to: string;
   subject: string;
-  body: string;
+  variables: object;
+
+  templatePath: string;
 }
 
 class SendMailService {
@@ -30,16 +32,11 @@ class SendMailService {
   }
 
   async execute (mail:MailToSend){
-    const { body, subject, to } = mail;
-
-    const npsPath = path.resolve(__dirname, '..', 'views', 'emails', 'npsMail.hbs');
-    const templateFileContent = fs.readFileSync(npsPath).toString('utf-8')
+    const { to, subject, variables, templatePath } = mail;
+    
+    const templateFileContent = fs.readFileSync(templatePath).toString('utf-8')
     const mailTemplateParse = handlebars.compile(templateFileContent)
-    const html = mailTemplateParse({
-      name: to,
-      title: subject,
-      description: body
-    })
+    const html = mailTemplateParse(variables)
     
     const message = await this.cliente.sendMail({
       to,
