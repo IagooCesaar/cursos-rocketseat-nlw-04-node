@@ -24,16 +24,6 @@ class SendMailController {
       return res.status(400).json({error: 'Survey does not exists'})      
     }
 
-    //Variáveis para compor modelo de e-mail
-    const npsPath = path.resolve(__dirname, '..', 'views', 'emails', 'npsMail.hbs');
-    const variables = {
-      name: user.name,
-      title: survey.title,
-      description: survey.description,
-      user_id: user.id,
-      link: process.env.URL_MAIL
-    }
-
     //Verificando se já existe resposta para o usuário
     const surveyUserAlreadyExist = await surveysUsersRepository.findOne({
       where: {
@@ -43,7 +33,20 @@ class SendMailController {
       // relations: ['Users']
     })
 
+    //Variáveis para compor modelo de e-mail
+    const npsPath = path.resolve(__dirname, '..', 'views', 'emails', 'npsMail.hbs');
+    const variables = {
+      name: user.name,
+      title: survey.title,
+      description: survey.description,
+      id: '',
+      link: process.env.URL_MAIL
+    }
+    
+
     if (surveyUserAlreadyExist) {
+      // Enviar e-mail para o usuário
+      variables.id = surveyUserAlreadyExist.id;
       await SendMailService.execute({
         to: email,
         subject: survey.title,
@@ -60,9 +63,10 @@ class SendMailController {
           user_id: user.id,
           survey_id,
         })
-        await surveysUsersRepository.save(surveyUser);    
-  
+        await surveysUsersRepository.save(surveyUser);         
+        
         // Enviar e-mail para o usuário
+        variables.id = surveyUser.id;  
         await SendMailService.execute({
           to: email,
           subject: survey.title,
