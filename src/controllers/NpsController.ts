@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getCustomRepository, Not, IsNull } from "typeorm";
 import { SurveyUsersRepository } from "../repositories/SurveyUserRepository";
+import * as yup from 'yup'
 
 class NpsController { 
   async execute(req: Request, res: Response) {
@@ -14,6 +15,14 @@ class NpsController {
       *Cálculo NPS
         (Número de Promotores - Número de Detratores) / (Número de respondentes) * 100      
     */
+
+    const paramSchema = yup.object().shape({
+      survey_id: yup
+        .string()
+        .uuid("A identificação da pesquisa deverá ser um UUID válido")
+        .required("A identificação da pesquisa deverá ser um UUID válido")
+    })
+    await paramSchema.validate(req.params, {abortEarly: false})
 
     const { survey_id } = req.params
     const surveysUsersRepository = getCustomRepository(SurveyUsersRepository)
