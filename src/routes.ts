@@ -24,7 +24,7 @@ router.get('/surveys', surveyController.show)
 
 router.post('/sendMail', sendMailController.execute)
 
-// http://localhost:3333/answers/1?u=dff8aa5c-0880-487a-a477-804ed0b7926b
+// http://localhost:3333/answers/1?survey=dff8aa5c-0880-487a-a477-804ed0b7926b
 router.get('/answers/:value', answerController.execute)
 
 router.get('/nps/:survey_id', npsController.execute)
