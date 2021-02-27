@@ -2,7 +2,8 @@ import { UsersRepository } from '../../repositories/UserRepository'
 import { getConnection, getCustomRepository } from 'typeorm'
 
 import createConnection from '../../database'
-import mockUser1 from './mock/User1.json'
+import mockUserData from './mock/User1.json'
+let mockUser1 = {...mockUserData}
 
 describe("Users Repository", () => {
   
@@ -20,10 +21,14 @@ describe("Users Repository", () => {
   it("Should be able to create a new user", async () => {
     const userRepository = getCustomRepository(UsersRepository);
 
-    const newUser = userRepository.create(mockUser1)  
+    const newUser = userRepository.create({
+      name: mockUser1.name,
+      email: mockUser1.email
+    })  
     await userRepository.save(newUser)
+    mockUser1 = newUser;
 
-    const findedUser = await userRepository.findOne(mockUser1)
+    const findedUser = await userRepository.findOne({id: mockUser1.id})
 
     expect(findedUser).toStrictEqual(newUser)
   })
@@ -31,17 +36,16 @@ describe("Users Repository", () => {
   it ('Should be able to find a user already created', async () => {
     const userRepository = getCustomRepository(UsersRepository)
 
-    const findedUser = await userRepository.findOne(mockUser1)
-    expect(mockUser1).toStrictEqual({
-      name: findedUser.name,
-      email: findedUser.email
+    const findedUser = await userRepository.findOne({
+      id: mockUser1.id
     })
+    expect(mockUser1).toStrictEqual(findedUser)
   })
 
   it("Should not be able to find and edit user's name", async () => {
     const userRepository = getCustomRepository(UsersRepository)
 
-    const userAlreadyCreated = await userRepository.findOne(mockUser1);
+    const userAlreadyCreated = await userRepository.findOne({id: mockUser1.id});
     userAlreadyCreated.name = "New User's Name"
 
     await userRepository.save(userAlreadyCreated)
