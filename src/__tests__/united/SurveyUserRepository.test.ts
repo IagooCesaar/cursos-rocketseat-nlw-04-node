@@ -4,10 +4,13 @@ import { getConnection, getCustomRepository } from 'typeorm'
 import createConnection from '../../database'
 import mockUserData from './mock/User1.json'
 import mockSurveyData from './mock/Survey1.json'
+import mockSurveyUserData from './mock/SurveyUser1.json'
 import { UsersRepository } from '../../repositories/UserRepository'
+import { SurveyUsersRepository } from '../../repositories/SurveyUserRepository'
 
 let mockSurvey1 = {...mockSurveyData}
 let mockUser1 = {...mockUserData}
+let mockSurveyUser1 = {...mockSurveyUserData}
 
 describe("Survey User Repository" ,() => {
 
@@ -54,6 +57,43 @@ describe("Survey User Repository" ,() => {
     })
 
     expect(findedUser).toStrictEqual(mockUser1);
+  })
+
+  it("Should be able to provide a survey for a user", async() => {
+    const surveyUserRepository = getCustomRepository(SurveyUsersRepository)
+
+    const newSurveyUser = surveyUserRepository.create({
+      survey_id: mockSurvey1.id,
+      user_id: mockUser1.id
+    })
+    await surveyUserRepository.save(newSurveyUser)
+
+    const findedSurveyUser = await surveyUserRepository.findOne({
+      survey_id: mockSurvey1.id,
+      user_id: mockUser1.id
+    })
+    mockSurveyUser1 = findedSurveyUser;
+
+    expect(findedSurveyUser).not.toStrictEqual(undefined)
+
+  })
+
+  it("Should be able to registry a user answer for a survey by id", async () => {
+    const surveyUserRepository = getCustomRepository(SurveyUsersRepository)
+
+    const surveyUser = await surveyUserRepository.findOne({
+      id: mockSurveyUser1.id
+    })
+    surveyUser.value = 10;
+
+    await surveyUserRepository.save(surveyUser)
+
+    const findedSurveyUser = await surveyUserRepository.findOne({
+      id: mockSurveyUser1.id
+    })
+
+    expect(findedSurveyUser).toStrictEqual(surveyUser)
+
   })
 
 })
