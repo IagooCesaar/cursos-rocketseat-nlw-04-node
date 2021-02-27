@@ -53,14 +53,14 @@ describe("Users Repository", () => {
     expect(userAlreadyCreated).toStrictEqual(findedUser)
   })
 
-  it("Should be able to find and delete a user already created", async () => {
+  it("Should be able to find and remove a user already created", async () => {
     const userRepository = getCustomRepository(UsersRepository)
 
     const user = await userRepository.findOne({email: mockUser1.email})
     await userRepository.remove(user)
 
     const userExists = await userRepository.findOne({email: mockUser1.email})
-
+    
     expect(userExists).toStrictEqual(undefined)
   })
 })
