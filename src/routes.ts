@@ -16,6 +16,9 @@ const answerController = new AnswerController();
 import { NpsController } from './controllers/NpsController'
 const npsController = new NpsController();
 
+import { SurveyUsersController } from './controllers/SurveyUsersController'
+const surveyUsersController = new SurveyUsersController();
+
 
 router.post('/users', userController.create)
 
@@ -28,5 +31,7 @@ router.post('/sendMail', sendMailController.execute)
 router.get('/answers/:value', answerController.execute)
 
 router.get('/nps/:survey_id', npsController.execute)
+
+router.get('/surveyUsers/:survey_id', surveyUsersController.show)
 
 export { router }

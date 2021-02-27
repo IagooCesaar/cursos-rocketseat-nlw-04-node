@@ -52,7 +52,7 @@ class NpsController {
       totalAnswers,
       npsScore
     })    
-  }
+  }  
 }
 
 export { NpsController }
