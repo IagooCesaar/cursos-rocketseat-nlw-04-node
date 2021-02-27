@@ -1,8 +1,8 @@
 import request from 'supertest'
 import { getConnection } from 'typeorm'
-import app from '../app'
+import app from '../../app'
 
-import createConnection from '../database'
+import createConnection from '../../database'
 
 const mockUser = {
   email: 'user@example.com',
