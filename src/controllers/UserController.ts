@@ -13,7 +13,6 @@ class UserController {
       email: yup.string().email("O e-mail deverá ser um e-mail válido").required("O e-mail é obrigatório")
     })
 
-
     await schema.validate(request.body, {
       abortEarly: false,
     }) 

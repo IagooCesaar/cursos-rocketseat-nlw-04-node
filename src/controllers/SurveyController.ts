@@ -1,11 +1,23 @@
 import {Request, Response } from 'express'
 import { getCustomRepository } from 'typeorm';
 import { SurveysRepository } from '../repositories/SurveyRepository'
+import * as yup from 'yup'
 
 class SurveyController {
 
   async create(req: Request, res: Response) {
     const { title, description } = req.body;
+    const bodySchema = yup.object().shape({
+      title: yup
+        .string()
+        .min(15,"O título deverá ter no mínimo 15 caracteres")
+        .required("O título da questão é obrigatóra"),
+      description: yup
+        .string()
+        .min(15, "A descrição deverá ter no mínimo 15 caracteres")
+        .required("A descrição da questão é obrigatória")
+    })
+    await bodySchema.validate(req.body, {abortEarly: false})
 
     const surveysRepository = getCustomRepository(SurveysRepository)
 
