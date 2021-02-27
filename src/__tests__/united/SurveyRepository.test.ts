@@ -2,9 +2,9 @@ import { SurveysRepository } from '../../repositories/SurveyRepository'
 import { getConnection, getCustomRepository } from 'typeorm'
 
 import createConnection from '../../database'
-import mockSurvey from './mock/Survey1.json'
+import mockSurveyData from './mock/Survey1.json'
 
-let mockSurvey1 = {...mockSurvey}
+let mockSurvey1 = {...mockSurveyData}
 
 describe("Surveys Repository", () => {
     
@@ -34,5 +34,45 @@ describe("Surveys Repository", () => {
     expect(findedSurvey).toStrictEqual(newSurvey)
   }) 
 
-  // it("Should be able to find a survey al")
+  it("Should be able to find a survey already created by id", async () => {
+    const surveyRepository = getCustomRepository(SurveysRepository)
+
+    const findedSurvey = await surveyRepository.findOne({
+      id: mockSurvey1.id
+    })
+    expect(findedSurvey).not.toStrictEqual(undefined)
+  })
+
+  it("Should be able to find and edit a survey", async () => {
+    const surveyRepository = getCustomRepository(SurveysRepository)
+
+    const findedSurvey = await surveyRepository.findOne({
+      id: mockSurvey1.id
+    })
+    expect(findedSurvey).not.toStrictEqual(undefined)
+
+    const newSurveyData = findedSurvey
+
+    newSurveyData.description = "This is a example"
+    newSurveyData.title = "This is a example"
+    await surveyRepository.save(newSurveyData)
+
+    const editedSurvey = await surveyRepository.findOne({
+      id: newSurveyData.id      
+    })
+
+    expect(editedSurvey).toStrictEqual(newSurveyData)
+  })
+
+  it("Should be able to delete a survey by id", async () => {
+    const surveyRepository = getCustomRepository(SurveysRepository)
+
+    await surveyRepository.delete({id: mockSurvey1.id})
+
+    const survey = await surveyRepository.findOne({id: mockSurvey1.id})
+    
+    expect(survey).toStrictEqual(undefined)
+  })
+
+
 })
