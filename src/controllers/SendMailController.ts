@@ -6,9 +6,22 @@ import { SurveyUsersRepository } from "../repositories/SurveyUserRepository";
 import { UsersRepository } from "../repositories/UserRepository";
 import SendMailService from "../services/SendMailService";
 import { AppError } from '../errors/AppError';
+import * as yup from 'yup'
 
 class SendMailController {
   async execute(req: Request, res: Response) {
+    const bodySchema = yup.object().shape({
+      email: yup
+        .string()
+        .email("E-mail deverá ser um e-mail válido")
+        .required("O e-mail é obrigatório"),
+      survey_id: yup
+        .string()
+        .uuid("A identificação da questão deverá ser um UUID válido")
+        .required("A identificação da questão é obrigatória")
+    })
+    await bodySchema.validate(req.body, {abortEarly: false})
+
     const { email, survey_id } = req.body;
 
     const usersRepository = getCustomRepository(UsersRepository);
