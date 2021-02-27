@@ -4,7 +4,7 @@ import createConnection from "./database"
 import express, {NextFunction, Request, Response} from 'express'
 import "express-async-errors"
 
-createConnection();
+(async () => {await createConnection();})() 
 
 import { router } from './routes'
 import { AppError } from './errors/AppError';
