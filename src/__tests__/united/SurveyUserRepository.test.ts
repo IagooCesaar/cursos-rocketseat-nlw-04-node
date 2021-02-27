@@ -85,6 +85,7 @@ describe("Survey User Repository" ,() => {
       id: mockSurveyUser1.id
     })
     surveyUser.value = 10;
+    mockSurveyUser1 = surveyUser;
 
     await surveyUserRepository.save(surveyUser)
 
@@ -93,7 +94,40 @@ describe("Survey User Repository" ,() => {
     })
 
     expect(findedSurveyUser).toStrictEqual(surveyUser)
+  })
 
+  it(
+    "Should be able to change a value answered for a user on a survey by id", async() => {
+
+    const surveyUserRepository = getCustomRepository(SurveyUsersRepository)
+
+    const surveyUser = await surveyUserRepository.findOne({
+      id: mockSurveyUser1.id
+    })
+    surveyUser.value = 9
+    await surveyUserRepository.save(surveyUser)
+
+    const findedSurveyUser = await surveyUserRepository.findOne({
+      id: mockSurveyUser1.id
+    })
+
+    expect(findedSurveyUser).not.toStrictEqual(undefined)
+    expect(findedSurveyUser.value).not.toStrictEqual(mockSurveyUser1.value)
+    expect(findedSurveyUser.value).toStrictEqual(surveyUser.value)
+  })
+
+  it("Should be able to remove a survey user's answer by id", async () => {
+    const surveyUserRepository = getCustomRepository(SurveyUsersRepository)
+
+    await surveyUserRepository.delete({
+      id: mockSurveyUser1.id
+    })
+    
+    const surveyUser = await surveyUserRepository.findOne({
+      id: mockSurveyUser1.id
+    })
+
+    expect(surveyUser).toStrictEqual(undefined)
   })
 
 })
